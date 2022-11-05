@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply m-0 p-0;
+    color: #37352F;
+  }
+
+  h2 {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 31px;
+  }
+
+  h1 {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 36px;
+  }
+
+}
+
+@layer components {
+  .display1 {
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 48px
+  }
+  .ce-header{
+    padding: 4px 0 3px;
+  }
+}
