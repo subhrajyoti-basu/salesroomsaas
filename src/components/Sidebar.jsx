@@ -20,7 +20,6 @@ function Sidebar() {
     // send full page data to global state
     const [sidebar, setsidebar] = useRecoilState(editorState);
     
-    const [active, setactive] = useState(false)
 
     const handleChange = (event) => {
         var clone = sidebar.slice(0)       
