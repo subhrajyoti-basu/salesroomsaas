@@ -1,5 +1,9 @@
-import { MdEdit, MdArrowBack } from 'react-icons/md';
-import { useLocation } from 'react-router-dom'
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useRef } from 'react';
+import { MdEdit, MdArrowBack, MdCheck } from 'react-icons/md';
+import { useRecoilState } from 'recoil';
+import { editorState, editorTitle, roomID } from '../../recoil/atom';
 
 function AdminBar() {
     return (
@@ -37,18 +41,72 @@ function HomeAdminBar() {
 }
 
 function EditorAdminBar() {
+
+    const [editorID, setEditorID] = useRecoilState(roomID);
+    const [editorData, seteditorData] = useRecoilState(editorState);
+    const titleRef = useRef(null);
+    const [save, setSave] = useState(false)
+    const [editTitle, seteditTitle] = useState(true)
+    const [getTitle, setTitle] = useRecoilState(editorTitle);
+
+    const submitData = async() => {
+        try {
+            
+            const url = `http://localhost:4000/room/${editorID}`;
+            const { data: res } = await axios({
+                method: 'PUT',
+                url:url, 
+                data: {canvasData: editorData, name: titleRef.current.innerText},
+                headers: { 
+                    'authorization': localStorage.token, 
+                    'Content-Type': 'application/json'
+                },
+            });
+            setSave(true)
+            
+        } catch (error) {
+            if (
+                error.response &&
+                error.response.status >= 400 &&
+                error.response.status <= 500
+            ) {
+                console.error(error.response.data.message);
+            }
+        }
+    }
+
+    useEffect(() => setSave(false), [editorData])
+
     return (
         <div className="flex items-center justify-between w-full">
             <div className='flex items-center space-x-4'>
-                <div className='p-2 hover:bg-neutral-100 rounded-full'><MdArrowBack size={23} /></div>
-                <div className="text-xl font-semibold outline-none">Untitled name</div>
-                <div className='p-2 hover:bg-neutral-100 rounded-full'><MdEdit size={16} /></div>
+                <div onClick={() => {submitData(); window.location='/';}} className='p-2 cursor-pointer hover:bg-neutral-100 rounded-full'><MdArrowBack size={23} /></div>
+                <div ref={titleRef}  className="text-xl font-semibold outline-none">{getTitle != 0 && getTitle}</div>
+                <div          
+                onClick={() => {
+                    titleRef.current.setAttribute('contentEditable', editTitle)
+                    if(editTitle){
+                        // document.execCommand('selectAll',false,null)
+                        titleRef.current.focus()
+                        window.getSelection().selectAllChildren( titleRef.current )
+                        
+                    }else{
+                        titleRef.current.blur()
+                    }
+                       
+                    seteditTitle(!editTitle)                            
+                }} 
+                >
+                    {editTitle && 
+                    <div className='p-2 border hover:bg-neutral-100 rounded-full'><MdEdit  size={16} /></div>}
+                    {!editTitle && 
+                    <div className='p-2 border border-black hover:bg-neutral-100 rounded-full'><MdCheck  size={18}/></div>}</div>
             </div>
             <div className='space-x-4'>
-            <button className='btn'>View as Public</button>
-            <button className='btn'>Save</button>            
+                <button className='btn'>View as Public</button>
+                <button onClick={submitData} className={`btn ${save && 'bg-neutral-500'}`}>{!save && 'Save'}{save && 'Saved'}</button>
             </div>
-            
+
         </div>
     )
 }

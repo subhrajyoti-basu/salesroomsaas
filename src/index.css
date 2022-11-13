@@ -64,4 +64,8 @@
   .template-room-card{
     @apply cursor-pointer w-[200px] hover:drop-shadow-lg hover:border bg-white h-[120px] rounded-lg border-2 justify-center items-center flex;
   }
+  .sidebar__element{
+    @apply relative flex flex-nowrap items-center  justify-between list-none rounded-md font-medium capitalize py-[1px] px-4 cursor-pointer hover:bg-neutral-200;
+     
+  }
 }

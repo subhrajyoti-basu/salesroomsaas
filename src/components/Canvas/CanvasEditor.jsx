@@ -1,34 +1,41 @@
 import EditorJS from "@editorjs/editorjs";
+import Embed from "@editorjs/embed";
 import Header from "@editorjs/header";
-import List  from "@editorjs/list";
+import List from "@editorjs/list";
+import Table from "@editorjs/table";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
-import { editorShow, editorState } from "../../recoil/atom";
+import { dataLoaded, editorShow, editorState, load1 } from "../../recoil/atom";
 
-var TESTDATA = [
-    { title: 'overview' },
-    { title: 'pricing' },
-    { title: 'testimonials' },
-]
+
 function CanvasEditor() {
     // recoil states
     const [pageNumber, setpageNumber] = useRecoilState(editorShow)
     const [editorData, seteditorData] = useRecoilState(editorState)
+    const [load, setLoad] = useRecoilState(dataLoaded)
+    const [shouldload, setshouldload] = useRecoilState(load1);
+
 
 
     const editRef = useRef()
 
-    useEffect(() => {
-        initEditor();
-        return async () => {
-            // if(editRef.current){
-            await editRef.current.destroy();
-            editRef.current = null;
-            // }
 
+
+    useEffect(() => {
+        if (load) {
+            initEditor();
         }
 
-    }, [pageNumber])
+        return async () => {
+            if (editRef.current) {
+                await editRef.current.destroy();
+                editRef.current = null;
+            }
+        }
+
+    }, [pageNumber, load, shouldload])
+
+
 
     function replaceItemAtIndex(arr, index, newValue) { return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)]; }
 
@@ -48,6 +55,7 @@ function CanvasEditor() {
             data: editorData[pageNumber].content,
             onReady: () => {
                 editRef.current = editor
+
             },
             onChange: () => {
                 editor.save().then(outputData => processData(outputData))
@@ -61,9 +69,12 @@ function CanvasEditor() {
                         defaultLevel: 2
                     }
                 },
-                list: List
+                table: Table,
+                list: List,
+                embed: Embed
             }
         })
+
     }
 
 
@@ -71,7 +82,7 @@ function CanvasEditor() {
         <div className="overflow-y-auto flex-auto">
             <div className="max-w-[700px] w-full mx-auto mt-20 p-5">
                 <div className="display1 capitalize mb-10">
-                    {editorData[pageNumber].title}
+                    {editorData[pageNumber]?.title}
                 </div>
                 <div id="editorjs"></div>
             </div>

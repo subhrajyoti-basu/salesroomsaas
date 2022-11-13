@@ -1,39 +1,82 @@
 import { Navigate } from "react-router-dom";
 import AdminBar from "../components/admin/AdminBar";
 import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
 
 function HomePage() {
 
-    const createNewRoom = async() => {
-        
+    const [roomList, setroomList] = useState(null);
+
+    useEffect(() => {
+        getAllroom();
+    }, [])
+
+    const getAllroom = async () => {
         try {
-			const url = "http://localhost:4000/addroom";
-			const { data: res } = await axios({
-                method: 'post',
-                url: url, 
-                headers: { 
-                    'authorization': localStorage.token, 
-                    'Content-Type': 'application/x-www-form-urlencoded'
+            const url = "http://localhost:4000/allrooms";
+            const { data: res } = await axios({
+                method: 'get',
+                url: url,
+                headers: {
+                    'authorization': localStorage.token,
+                    'Content-Type': 'application/json'
                 },
-                data: {'roomName': 'untitled'}
             });
-			// console.log(res)
+            setroomList(res)
+        } catch (error) {
+            if (
+                error.response &&
+                error.response.status >= 400 &&
+                error.response.status <= 500
+            ) {
+                console.error(error.message);
+            }
+        }
+    }
+
+    const createNewRoom = async () => {
+
+        try {
+            const url = "http://localhost:4000/addroom";
+            const { data: res } = await axios({
+                method: 'post',
+                url: url,
+                headers: {
+                    'authorization': localStorage.token,
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    'roomName': 'untitled',
+                    'roomData': [{
+                        'title': 'Welcome',
+                        'content': {
+                            "time": Date.now(),
+                            "blocks": [
+                                { 'type': 'paragraph', 'data': { "text": "Start Writing" } }
+                            ],
+                            "version": "2.25.0"
+                        }
+                    }]
+                }
+            });
+            // console.log(res)
             window.location = `/editor?id=${res._id}`;
-		} catch (error) {
-			if (
-				error.response &&
-				error.response.status >= 400 &&
-				error.response.status <= 500
-			) {
-				console.error(error.message);
-			}
-		}
+        } catch (error) {
+            if (
+                error.response &&
+                error.response.status >= 400 &&
+                error.response.status <= 500
+            ) {
+                console.error(error.message);
+            }
+        }
     }
 
 
-    if(!localStorage.token){
-		return <Navigate replace to='/login' />;
-	}else return (
+    if (!localStorage.token) {
+        return <Navigate replace to='/login' />;
+    } else return (
         <div className='h-screen flex flex-col'>
             <AdminBar />
             <div className="px-5">
@@ -70,91 +113,18 @@ function HomePage() {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="" >
-                                <td>1</td>
-                                <td>Room Name</td>
-                                <td>
-                                    <span className="paused__status">paused</span>
+                            {roomList?.map((item,i) => {
+                                return <tr onClick={() => window.location = `/editor?id=${item._id}`} className="cursor-pointer" key={item._id}>
+                                    <td>{i+1}</td>
+                                    <td>{item.roomName}</td>
+                                    <td>
+                                        <span className="active__status">Published</span>
                                     </td>
-                                <td>Activity</td>
-                                <td>Last Seen</td>
-                                <td>Created By</td>
-                            </tr>
-                            <tr className="" >
-                                <td>2</td>
-                                <td>Room Name</td>
-                                <td>
-                                    <span className='active__status'>
-                                        active
-                                        </span></td>
-                                <td>Activity</td>
-                                <td>Last Seen</td>
-                                <td>Created By</td>
-                            </tr>
-                            <tr className="" >
-                                <td>3</td>
-                                <td>Room Name</td>
-                                <td>Status</td>
-                                <td>Activity</td>
-                                <td>Last Seen</td>
-                                <td>Created By</td>
-                            </tr>
-                            <tr className="" >
-                                <td>4</td>
-                                <td>Room Name</td>
-                                <td>Status</td>
-                                <td>Activity</td>
-                                <td>Last Seen</td>
-                                <td>Created By</td>
-                            </tr>
-                            <tr className="" >
-                                <td>5</td>
-                                <td>Room Name</td>
-                                <td>Status</td>
-                                <td>Activity</td>
-                                <td>Last Seen</td>
-                                <td>Created By</td>
-                            </tr>
-                            <tr className="" >
-                                <td>6</td>
-                                <td>Room Name</td>
-                                <td>Status</td>
-                                <td>Activity</td>
-                                <td>Last Seen</td>
-                                <td>Created By</td>
-                            </tr>
-                            <tr className="" >
-                                <td>7</td>
-                                <td>Room Name</td>
-                                <td>Status</td>
-                                <td>Activity</td>
-                                <td>Last Seen</td>
-                                <td>Created By</td>
-                            </tr>
-                            <tr className="" >
-                                <td>8</td>
-                                <td>Room Name</td>
-                                <td>Status</td>
-                                <td>Activity</td>
-                                <td>Last Seen</td>
-                                <td>Created By</td>
-                            </tr>
-                            <tr className="" >
-                                <td>9</td>
-                                <td>Room Name</td>
-                                <td>Status</td>
-                                <td>Activity</td>
-                                <td>Last Seen</td>
-                                <td>Created By</td>
-                            </tr>
-                            <tr className="" >
-                                <td>10</td>
-                                <td>Room Name</td>
-                                <td>Status</td>
-                                <td>Activity</td>
-                                <td>Last Seen</td>
-                                <td>Created By</td>
-                            </tr>
+                                    <td>Activity</td>
+                                    <td>Last Seen</td>
+                                    <td>{item.roomCreatedBy}</td>
+                                </tr>
+                            })}
                         </tbody>
                     </table>
                 </div>
