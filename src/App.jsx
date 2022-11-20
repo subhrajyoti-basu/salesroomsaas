@@ -4,12 +4,17 @@ import HomePage from './pages/HomePage';
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import ViewRoom from './pages/ViewRoom';
+import EditProfile from './pages/EditProfile';
+
+
+
 function App() {
 
   return (
     <Routes>
       <Route path='/' element={<HomePage />} />
       <Route path='/editor' element={<EditSalesRoom />} />
+      <Route path='/profile' element={<EditProfile />} />
       <Route path='/room' element={<ViewRoom />} />
       <Route path="/signup" exact element={<Signup />} />
 			<Route path="/login" exact element={<Login />} />

@@ -14,7 +14,7 @@ function HomePage() {
 
     const getAllroom = async () => {
         try {
-            const url = "http://localhost:4000/allrooms";
+            const url = `${import.meta.env.VITE_API_ADDRESS}/allrooms`;
             const { data: res } = await axios({
                 method: 'get',
                 url: url,
@@ -24,6 +24,7 @@ function HomePage() {
                 },
             });
             setroomList(res)
+            console.log(res)
         } catch (error) {
             if (
                 error.response &&
@@ -38,7 +39,7 @@ function HomePage() {
     const createNewRoom = async () => {
 
         try {
-            const url = "http://localhost:4000/addroom";
+            const url = `${import.meta.env.VITE_API_ADDRESS}/addroom`;
             const { data: res } = await axios({
                 method: 'post',
                 url: url,

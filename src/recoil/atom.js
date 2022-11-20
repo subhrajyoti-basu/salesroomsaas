@@ -47,5 +47,11 @@ export const roomID = atom({
     default: 0
 })
 
+export const brandImage = atom({
+    key: 'brandImage',
+    default: ''
+})
+
+
 
 

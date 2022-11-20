@@ -3,7 +3,7 @@ import AdminBar from "../components/admin/AdminBar";
 import RoomEditor from "../components/editor/RoomEditor";
 import { useEffect, useMemo } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { dataLoaded, editorState, editorTitle, load1, roomID } from "../recoil/atom";
+import { brandImage, dataLoaded, editorState, editorTitle, load1, roomID } from "../recoil/atom";
 import axios from "axios";
 
 const useQuery = () => {
@@ -19,13 +19,14 @@ function EditSalesRoom() {
   const [loader, setLoader] = useRecoilState(dataLoaded);
 
   const [getTitle, setTitle] = useRecoilState(editorTitle);
+  const [brandlogo, setbrandlogo] = useRecoilState(brandImage);
 
   const ID = query.get('id')
 
   const getData = async () => {
     try {
       if (editorID != 0) {
-        const url = `http://localhost:4000/room/${editorID}`;
+        const url = `${import.meta.env.VITE_API_ADDRESS}/room/${editorID}`;
         const { data: res } = await axios({
           method: 'GET',
           url: url,
@@ -37,6 +38,7 @@ function EditSalesRoom() {
 
           setTitle(res.roomName)
           seteditorData(res.roomData)
+          setbrandlogo(res.brandPhoto)
           setLoader(true)
       }
 

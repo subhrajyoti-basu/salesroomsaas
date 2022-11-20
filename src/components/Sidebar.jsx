@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { BsPlus } from 'react-icons/bs';
 import { FiMoreHorizontal } from 'react-icons/fi';
+import {AiOutlineDelete} from 'react-icons/ai';
 import { useRecoilState } from "recoil";
 import { dataLoaded, editorShow, editorState, load1 } from "../recoil/atom";
 import Popup from "./element/Popup";
@@ -26,11 +27,16 @@ function Sidebar() {
 
     function replaceItemAtIndex(arr, index, newValue) { return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)]; }
 
+    function removeItemAtIndex(arr, index) { return [...arr.slice(0, index), ...arr.slice(index + 1)]; }
 
     const handleChange = (event) => {
         const newValue = { ...sidebar[contentShow], title: event.target.value }
         setsidebar(replaceItemAtIndex(sidebar, contentShow, newValue))
         // setshouldload(true)
+    }
+
+    const removeSection = (i) => {
+        setsidebar(removeItemAtIndex(sidebar,i))
     }
 
     const addSection = (event) => {
@@ -40,7 +46,7 @@ function Sidebar() {
             content: {
                 "time": Date.now(),
                 "blocks": [
-                    { 'type': 'paragraph', 'data': { "text": "Start Writing" } }
+                    { 'type': 'paragraph', 'data': { "text": "Press TAB for more menu" } }
                 ],
                 "version": "2.25.0"
             }
@@ -82,7 +88,7 @@ function Sidebar() {
                     onClick={() => {
                         setContentShow(i)
                     }}
-                    className={`${contentShow == i && 'bg-neutral-300 text-gray-800'} relative flex flex-nowrap items-center group  justify-between list-none rounded-md font-medium capitalize py-[1px] px-4 cursor-pointer hover:bg-neutral-200`}>
+                    className={`${contentShow == i && 'bg-neutral-300 text-gray-800'} relative space-x-2 flex flex-nowrap items-center group  justify-between list-none rounded-md font-medium capitalize py-[1px] px-4 cursor-pointer hover:bg-neutral-200`}>
                     <p className="truncate w-full">{item.title}</p>
                     <FiMoreHorizontal onClick={(e) => {
                         e.stopPropagation()
@@ -91,6 +97,10 @@ function Sidebar() {
                         setindex(i)
                         setshowadd(false)
                     }} className=" text-black hidden group-hover:block" />
+                    {sidebar.length > 1 &&
+                    <AiOutlineDelete onClick={() => {
+                        removeSection(i)
+                    }} className=" text-black hidden group-hover:block" />}
                     {show && index == i &&
                         <Popup >
                             <form onSubmit={handleRename}>

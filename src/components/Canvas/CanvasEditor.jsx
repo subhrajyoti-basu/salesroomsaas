@@ -6,6 +6,7 @@ import Table from "@editorjs/table";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import { dataLoaded, editorShow, editorState, load1 } from "../../recoil/atom";
+import BrandLogoUpload from "../element/BrandLogoUpload";
 
 
 function CanvasEditor() {
@@ -81,6 +82,9 @@ function CanvasEditor() {
     return (
         <div className="overflow-y-auto flex-auto">
             <div className="max-w-[700px] w-full mx-auto mt-20 p-5">
+                {pageNumber == 0 && <div>
+                    <BrandLogoUpload />   
+                </div>}
                 <div className="display1 capitalize mb-10">
                     {editorData[pageNumber]?.title}
                 </div>

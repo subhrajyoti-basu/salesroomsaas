@@ -13,7 +13,7 @@ const Login = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const url = "http://localhost:4000/login";
+			const url = `${import.meta.env.VITE_API_ADDRESS}/login`;
 			const { data: res } = await axios.post(url, data);
 			console.log(res)
 			localStorage.setItem("token", `JWT ${res.token}`);
