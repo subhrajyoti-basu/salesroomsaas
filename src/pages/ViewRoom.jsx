@@ -66,7 +66,7 @@ function ViewRoom() {
             </div>
             <div className="w-full overflow-y-auto">
                 <div className="text-right max-w-[750px] px-4 mx-auto py-10">
-                    Build with <a className="underline font-bold" href="https://marketled.online/"> MarketLed </a>
+                    made by <a className="underline font-bold" href="https://marketled.online/"> MarketLed </a>
                 </div>
                 <div className="max-w-[750px] mx-auto my-10 md:my-48 space-y-9 ">
                     {brandLogo &&

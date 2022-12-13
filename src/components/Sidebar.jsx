@@ -82,7 +82,7 @@ function Sidebar() {
 
 
     return (
-        <div className='w-[270px] md:block hidden px-2 pt-5 space-y-2 h-full text-gray-500 bg-neutral-100'>
+        <div className='w-[270px] pt-[80px] px-2 space-y-2 h-full text-gray-500 bg-neutral-100'>
             {load && sidebar.map((item, i) => {
                 return <li key={i}
                     onClick={() => {
