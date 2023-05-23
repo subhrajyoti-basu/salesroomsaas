@@ -25,6 +25,7 @@ const Login = () => {
         error.response.status >= 400 &&
         error.response.status <= 500
       ) {
+        console.log(error);
         setError(error.response.data.message);
       }
     }
