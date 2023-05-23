@@ -6,9 +6,9 @@ function Check({id, list}) {
         <div className="cursor-pointer" onClick={
             ()=>
             {
-                if(!active){
-                    setActive(true)
+                if(!active){                
                     list(a => [...a, id])
+                    setActive(true)
                 }else{
                     list(a=> a.filter((word) => word != id))
                     setActive(false)

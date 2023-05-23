@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import Output from 'editorjs-react-renderer';
+import FullscreenLoader from "../components/loading/FullscreenLoader";
 
 const useQuery = () => {
     const { search } = useLocation();
@@ -14,11 +15,13 @@ const useQuery = () => {
 function ViewRoom() {
     const [data, setData] = useState();
     const [brandLogo, setbrandlogo] = useState();
+    const [activeLoader, setactiveLoader] = useState(false)
     const query = useQuery();
     const ID = query.get('id')
 
     const getData = async () => {
         try {
+            setactiveLoader(true)
             const url = `${import.meta.env.VITE_API_ADDRESS}/room/${ID}`;
             const { data: res } = await axios({
                 method: 'GET',
@@ -29,6 +32,7 @@ function ViewRoom() {
             });
             setData(res.roomData);
             setbrandlogo(res.brandPhoto);
+            setactiveLoader(false)
 
 
         } catch (error) {
@@ -46,8 +50,9 @@ function ViewRoom() {
     useEffect(() => {
         getData()
     }, [ID])
-
-    return (
+    if(activeLoader){
+        return <FullscreenLoader/>
+    }else return (
         <div className="flex h-screen">
             <div className="w-[270px] md:block hidden px-2 pt-5 shadow z-10 space-y-2 h-full text-gray-500 bg-neutral-100">
                 {data?.map((item, i) => {
@@ -69,14 +74,14 @@ function ViewRoom() {
                     made by <a className="underline font-bold" href="https://marketled.online/"> MarketLed </a>
                 </div>
                 <div className="max-w-[750px] mx-auto my-10 md:my-48 space-y-9 ">
-                    {brandLogo &&
+                    {/* {brandLogo &&
                         <div className="px-4">
                             <div className={`relative overflow-hidden h-[100px] w-[100px] border group rounded-full bg-neutral-300`}>
                                 <div className="h-full w-full ">
                                     <img src={brandLogo} className="h-full w-full object-cover object-center" />
                                 </div>
                             </div>
-                        </div>}
+                        </div>} */}
                     {data?.map((item, i) => {
                         return (
                             <div className="px-4" id={item.title} key={i}>

@@ -1,10 +1,12 @@
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import AdminBar from "../components/admin/AdminBar";
 import RoomEditor from "../components/editor/RoomEditor";
 import { useEffect, useMemo } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { brandImage, dataLoaded, editorState, editorTitle, load1, roomID } from "../recoil/atom";
+import { useRecoilState} from "recoil";
+import { brandImage, dataLoaded, editorState, editorTitle, load1, loadingAnimation, roomID } from "../recoil/atom";
 import axios from "axios";
+import { getData } from "../services/fetchRooms";
+import FullscreenLoader from "../components/loading/FullscreenLoader";
 
 const useQuery = () => {
   const { search } = useLocation();
@@ -20,51 +22,33 @@ function EditSalesRoom() {
 
   const [getTitle, setTitle] = useRecoilState(editorTitle);
   const [brandlogo, setbrandlogo] = useRecoilState(brandImage);
+  const [activeLoader, setactiveLoader] = useRecoilState(loadingAnimation)
+
 
   const ID = query.get('id')
 
-  const getData = async () => {
-    try {
-      if (editorID != 0) {
-        const url = `${import.meta.env.VITE_API_ADDRESS}/room/${editorID}`;
-        const { data: res } = await axios({
-          method: 'GET',
-          url: url,
-          headers: {
-            'authorization': localStorage.token,
-            'Content-Type': 'application/json'
-          },
-        });
-
-          setTitle(res.roomName)
-          seteditorData(res.roomData)
-          setbrandlogo(res.brandPhoto)
-          setLoader(true)
-      }
-
-    } catch (error) {
-      if (
-        error.response &&
-        error.response.status >= 400 &&
-        error.response.status <= 500
-      ) {
-        console.error(error.response.data.message);
-      }
-    }
-  }
-
+  
   useEffect(() => {
     setEditorID(ID)
-    getData()
+    getData(editorID).then(a => {
+      setTitle(a.roomName)
+      seteditorData(a.roomData)
+      setLoader(true)
+    })
   }, [editorID])
 
-
-  return (
-    <div className='h-screen flex flex-col'>
-      <AdminBar />
-      <RoomEditor />
-    </div>
-  );
+  if (!localStorage.token) {
+    return <Navigate replace to='/login' />;
+  } else return (
+    <div>
+      {activeLoader && <FullscreenLoader/>}
+    
+      <div className='h-screen flex flex-col'>
+        <AdminBar />
+        <RoomEditor />
+      </div>
+      </div>
+    );
 }
 
 export default EditSalesRoom;

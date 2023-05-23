@@ -52,6 +52,11 @@ export const brandImage = atom({
     default: ''
 })
 
+export const loadingAnimation = atom({
+    key: 'loadingAnimation',
+    default: false
+})
+
 
 
 

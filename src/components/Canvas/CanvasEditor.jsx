@@ -81,10 +81,10 @@ function CanvasEditor() {
 
     return (
         <div className="overflow-y-auto flex-auto">
-            <div className="max-w-[700px] w-full mx-auto mt-20 p-5">
-                {pageNumber == 0 && <div>
+            <div className="max-w-[700px] w-full mx-auto mt-40 p-5">
+                {/* {pageNumber == 0 && <div>
                     <BrandLogoUpload />   
-                </div>}
+                </div>} */}
                 <div className="display1 capitalize mb-10">
                     {editorData[pageNumber]?.title}
                 </div>
