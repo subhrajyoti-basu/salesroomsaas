@@ -30,6 +30,8 @@ const Login = () => {
       ) {
         setError(error.response.data.message);
       }
+    } finally {
+      setActiveLoading(false);
     }
   };
 
